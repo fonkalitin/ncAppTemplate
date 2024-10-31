@@ -1,15 +1,20 @@
 ﻿
 using HostMgd.EditorInput;
-using Application = HostMgd.ApplicationServices.Application;
 using HostMgd.ApplicationServices;
-using Multicad.Runtime;
 using Teigha.DatabaseServices;
+using Db = Teigha.DatabaseServices;
+using Teigha.Runtime;
+using Multicad.Runtime;
+using Multicad;
+using Multicad.DatabaseServices;
+using System.Security.Cryptography;
+using Multicad.Objects;
 
 namespace ncAppTemplate
 {
     public class Class1
     {
-        [CommandMethod("test-selection", CommandFlags.UsePickSet | CommandFlags.NoCheck | CommandFlags.NoPrefix)]
+        [Teigha.Runtime.CommandMethod("test-selection", Teigha.Runtime.CommandFlags.UsePickSet)]
         public static void TestSelectionCommand()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
@@ -18,15 +23,32 @@ namespace ncAppTemplate
 
             Editor ed = doc.Editor;
 
+
             PromptSelectionResult selResult = ed.SelectImplied();
             if (selResult.Status != PromptStatus.OK)
             {
-                ed.WriteMessage("\nNo selected entities");
+                ed.WriteMessage("\nНе выбрано ни одного обьекта");
                 return;
             }
-
+            
             SelectionSet selValue = selResult.Value;
+
+            SelectedObject en = selValue[0];
+            
             ObjectId[] ids = selResult.Value.GetObjectIds();
+            
+            McObjectId mcsId = McObjectId.FromOldIdPtr(ids[0].OldIdPtr);
+            McObject currParentObj = mcsId.GetObject();
+
+            if (currParentObj is McParametricObject currParParentObj)
+            {
+                McDbEntity HighlightenObj = currParParentObj.DbEntity;
+                HighlightenObj.Highlight(true);
+            }
+
+            ed.WriteMessage($"\nВ наборе обнаружено объектов: {ids.Length}");
+            ed.GetString($"\nПодсветка зеленым");
+
         }
     }
 }
