@@ -29,14 +29,14 @@ namespace ncAppTemplate
                 ed.WriteMessage("\nНе выбрано ни одного обьекта");
                 return;
             }
-            
+
             SelectionSet selValue = selResult.Value;
             ObjectId[] DbIds = selResult.Value.GetObjectIds();
             ed.WriteMessage($"\nВ наборе обнаружено объектов: {DbIds.Length}");
 
             foreach (ObjectId DbId in DbIds)
             {
-                
+
                 McObjectId mcsId = McObjectId.FromOldIdPtr(DbId.OldIdPtr); // Преобразование ObjectId >>> McObjectId
                 McObject currParentObj = mcsId.GetObject();
 
@@ -137,4 +137,5 @@ namespace ncAppTemplate
 
 
         }
+    }
 }
