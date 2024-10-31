@@ -20,12 +20,9 @@ namespace ncAppTemplate
         public static void TestSelectionCommand()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
-            if (doc == null)
-                return;
+            if (doc == null) { return; }
 
             Editor ed = doc.Editor;
-
-
             PromptSelectionResult selResult = ed.SelectImplied();
             if (selResult.Status != PromptStatus.OK)
             {
@@ -34,12 +31,12 @@ namespace ncAppTemplate
             }
             
             SelectionSet selValue = selResult.Value;
-            ObjectId[] ids = selResult.Value.GetObjectIds();
-            ed.WriteMessage($"\nВ наборе обнаружено объектов: {ids.Length}");
+            ObjectId[] DbIds = selResult.Value.GetObjectIds();
+            ed.WriteMessage($"\nВ наборе обнаружено объектов: {DbIds.Length}");
 
-            foreach (ObjectId id in ids)
+            foreach (ObjectId DbId in DbIds)
             {
-                McObjectId mcsId = McObjectId.FromOldIdPtr(id.OldIdPtr);
+                McObjectId mcsId = McObjectId.FromOldIdPtr(DbId.OldIdPtr);
                 McObject currParentObj = mcsId.GetObject();
 
                 if (currParentObj is McParametricObject currParParentObj)
@@ -47,9 +44,8 @@ namespace ncAppTemplate
                     McDbEntity HighlightenObj = currParParentObj.DbEntity;
                     HighlightenObj.Highlight(true);
                 }
-                
-                ed.GetString($"\nПодсветка зеленым");
             }
+            ed.GetString($"\nПодсветка зеленым");
         }
 
 
