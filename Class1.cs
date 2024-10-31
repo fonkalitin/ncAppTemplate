@@ -36,8 +36,10 @@ namespace ncAppTemplate
 
             foreach (ObjectId DbId in DbIds)
             {
-                McObjectId mcsId = McObjectId.FromOldIdPtr(DbId.OldIdPtr);
+                
+                McObjectId mcsId = McObjectId.FromOldIdPtr(DbId.OldIdPtr); // Преобразование ObjectId >>> McObjectId
                 McObject currParentObj = mcsId.GetObject();
+
 
                 if (currParentObj is McParametricObject currParParentObj)
                 {
